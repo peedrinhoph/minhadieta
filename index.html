@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#173f35">
+<meta name="description" content="Planejador pessoal de dieta, refeições e macronutrientes. Funciona offline e salva os dados no aparelho.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Minha Dieta">
+<title>Minha Dieta</title>
+<style>
+:root{--bg:#f3f6f4;--surface:#fff;--surface2:#edf3ef;--text:#17231e;--muted:#64736b;--line:#dce5df;--primary:#1d5948;--primary2:#174638;--accent:#d7e9dd;--danger:#a73737;--shadow:0 8px 24px #173f3510;--radius:18px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.45;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+button,input,textarea,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #8abda5;outline-offset:2px}
+.top{background:linear-gradient(135deg,#173f35,#276650);color:white;padding:24px 18px 20px;border-radius:0 0 26px 26px}
+.top-inner,.wrap{max-width:900px;margin:auto}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:11px}.logo{width:44px;height:44px;border-radius:14px;background:#ffffff1c;display:grid;place-items:center;font-size:24px}.brand h1{font-size:21px;line-height:1.1;margin:0}.brand p{margin:4px 0 0;color:#d5e6dc;font-size:12px}.top-actions{display:flex;gap:7px}.top .btn{background:#ffffff16;color:white;border-color:#ffffff38}.top .btn:hover{background:#ffffff27}
+.wrap{padding:16px 14px}.nav{display:flex;gap:8px;overflow:auto;padding:2px 0 12px;scrollbar-width:none}.nav button{white-space:nowrap;border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:9px 14px;border-radius:999px;font-weight:650;font-size:13px}.nav button.active{background:var(--primary);border-color:var(--primary);color:white}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:14px}.card h2{font-size:17px;margin:0 0 12px}.card h3{font-size:15px;margin:0 0 8px}.muted{color:var(--muted)}.small{font-size:12px}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.section-head h2{margin:0}.btn{border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--text);padding:10px 13px;font-weight:650;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:6px}.btn.primary{background:var(--primary);color:white;border-color:var(--primary)}.btn.primary:hover{background:var(--primary2)}.btn.soft{background:var(--surface2);border-color:var(--surface2);color:var(--primary)}.btn.danger{color:var(--danger);border-color:#efd4d4;background:#fffafa}.btn.icon{padding:8px 10px}.btn:disabled{opacity:.45;cursor:not-allowed}
+.day-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.day{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:9px 2px;text-align:center;color:var(--muted);font-size:12px;font-weight:700}.day span{display:block;font-size:10px;font-weight:500;margin-top:3px}.day.active{background:var(--primary);border-color:var(--primary);color:white}.day.has-items:not(.active){border-color:#9fc5ae;background:#f1f8f3;color:var(--primary)}
+.summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.metric{background:var(--surface2);border-radius:14px;padding:12px 10px}.metric .n{font-size:20px;font-weight:800;letter-spacing:-.5px}.metric .l{font-size:11px;color:var(--muted);margin-top:2px}.metric.cal{background:#e3f0e8}.metric.prot{background:#e6effb}.metric.carb{background:#fff0d9}.metric.fat{background:#f8e6e8}
+.progress{height:7px;border-radius:20px;background:#e7ede9;overflow:hidden;margin-top:7px}.progress i{height:100%;display:block;background:var(--primary);border-radius:20px;width:0}
+.meal{border:1px solid var(--line);border-radius:15px;margin-bottom:10px;overflow:hidden}.meal:last-child{margin-bottom:0}.meal-top{padding:12px;display:flex;align-items:flex-start;gap:11px}.time{font-weight:800;color:var(--primary);font-size:13px;min-width:52px;padding-top:2px}.meal-main{flex:1;min-width:0}.meal-name{font-weight:750}.meal-desc{white-space:pre-wrap;color:var(--muted);font-size:13px;margin-top:5px}.meal-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.pill{font-size:11px;padding:4px 7px;border-radius:8px;background:var(--surface2);color:var(--muted)}.meal-actions{display:flex;gap:4px}.meal-actions .btn{padding:6px 8px;border-radius:9px;font-size:12px}.meal-foot{border-top:1px solid var(--line);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fbfcfb}.check{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);cursor:pointer}.check input{width:17px;height:17px;accent-color:var(--primary)}
+.empty{text-align:center;padding:30px 15px;color:var(--muted)}.empty .emoji{font-size:32px;margin-bottom:8px}.empty p{margin:5px 0 14px}
+label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:0 0 6px}input[type=text],input[type=time],input[type=number],textarea,select{width:100%;border:1px solid var(--line);background:#fff;color:var(--text);padding:11px 12px;border-radius:11px;min-width:0}textarea{resize:vertical;min-height:85px}input[type=number]{appearance:textfield}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{margin-bottom:12px}.field.full{grid-column:1/-1}.form-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:10px}.days-checks{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.days-checks label{margin:0}.days-checks input{position:absolute;opacity:0}.days-checks span{display:block;text-align:center;border:1px solid var(--line);border-radius:9px;padding:8px 1px;color:var(--muted);font-size:11px}.days-checks input:checked+span{background:var(--primary);color:white;border-color:var(--primary)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.setting-row strong{display:block;font-size:14px}.setting-row p{font-size:12px;color:var(--muted);margin:3px 0 0}.notice{padding:12px;border-radius:12px;background:#fff6df;color:#755619;font-size:12px;margin-bottom:12px}.hidden{display:none!important}.bottomnav{position:fixed;bottom:0;left:0;right:0;background:#ffffffed;backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:9px 14px calc(9px + env(safe-area-inset-bottom));display:flex;justify-content:center;z-index:5}.bottomnav-inner{width:100%;max-width:900px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.bottomnav button{border:0;background:transparent;color:var(--muted);padding:7px 3px;border-radius:12px;font-size:11px;font-weight:700}.bottomnav button b{display:block;font-size:20px;line-height:1.3}.bottomnav button.active{background:var(--surface2);color:var(--primary)}
+dialog{border:0;border-radius:20px;padding:0;width:min(600px,calc(100% - 24px));max-height:90dvh;box-shadow:0 20px 70px #0004;color:var(--text)}dialog::backdrop{background:#10231bcc;backdrop-filter:blur(3px)}.modal-head{padding:17px 18px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.modal-head h2{font-size:18px;margin:0}.modal-body{padding:16px 18px;overflow:auto;max-height:calc(90dvh - 70px)}.toast{position:fixed;bottom:calc(88px + env(safe-area-inset-bottom));left:50%;transform:translate(-50%,15px);opacity:0;pointer-events:none;background:#17231e;color:white;padding:11px 16px;border-radius:12px;font-size:13px;box-shadow:var(--shadow);transition:.2s;z-index:10;max-width:90vw;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}.footer-note{text-align:center;color:var(--muted);font-size:11px;padding:8px 12px 20px}.inline-check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text)}.inline-check input{accent-color:var(--primary);width:17px;height:17px}
+@media(min-width:700px){.wrap{padding:20px 18px}.top{padding:28px 22px}.card{padding:20px}.meal-top{padding:15px}.metric .n{font-size:24px}}
+@media(max-width:420px){.summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.top-actions .btn span{display:none}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.day{font-size:11px;padding:8px 1px}.section-head{align-items:center}}
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="top-inner">
+  <div class="topline">
+   <div class="brand"><div class="logo">🥗</div><div><h1>Minha Dieta</h1><p>Seu plano alimentar, sempre à mão</p></div></div>
+   <div class="top-actions">
+    <button class="btn" id="installBtn" hidden>＋ <span>Instalar app</span></button>
+    <button class="btn" id="quickAddBtn">＋ <span>Refeição</span></button>
+   </div>
+  </div>
+ </div>
+</header>
+<main class="wrap">
+ <nav class="nav" aria-label="Seções">
+  <button class="active" data-view="today">Minha semana</button>
+  <button data-view="plan">Plano alimentar</button>
+  <button data-view="settings">Dados e backup</button>
+ </nav>
+
+ <section id="view-today">
+  <div class="card">
+   <div class="section-head"><div><h2>Escolha o dia</h2><div class="muted small" id="dateLabel"></div></div><button class="btn soft" id="todayBtn">Hoje</button></div>
+   <div class="day-strip" id="dayStrip"></div>
+  </div>
+  <div class="card">
+   <div class="section-head"><div><h2>Resumo do dia</h2><div class="muted small" id="daySummaryText">Valores planejados das refeições</div></div><button class="btn icon" id="editTargetsBtn" title="Editar metas">⚙️</button></div>
+   <div class="summary-grid" id="summaryGrid"></div>
+  </div>
+  <div class="card">
+   <div class="section-head"><div><h2 id="mealsTitle">Refeições</h2><button class="btn primary" id="addMealBtn">＋ Adicionar</button></div></div>
+   <div id="mealList"></div>
+  </div>
+  <div class="footer-note">Os dados ficam salvos neste aparelho. Exporte um backup para não perder suas informações.</div>
+ </section>
+
+ <section id="view-plan" class="hidden">
+  <div class="card">
+   <div class="section-head"><div><h2>Plano alimentar</h2><div class="muted small">Cadastre refeições por horário e escolha em quais dias aparecem.</div></div><button class="btn primary" id="newMealBtn">＋ Nova refeição</button></div>
+   <div class="notice">Edite os alimentos, porções e macros de cada refeição. Os totais diários são somados a partir dos valores cadastrados.</div>
+   <div id="planList"></div>
+  </div>
+  <div class="card">
+   <h2>Metas nutricionais</h2>
+   <p class="muted small">Metas usadas no resumo diário. Ajuste conforme sua evolução ou orientação profissional.</p>
+   <div class="form-grid">
+    <div><label for="targetCalories">Calorias (kcal)</label><input type="number" id="targetCalories" min="0" step="10"></div>
+    <div><label for="targetProtein">Proteína (g)</label><input type="number" id="targetProtein" min="0" step="1"></div>
+    <div><label for="targetCarbs">Carboidratos (g)</label><input type="number" id="targetCarbs" min="0" step="1"></div>
+    <div><label for="targetFat">Gorduras (g)</label><input type="number" id="targetFat" min="0" step="1"></div>
+   </div>
+   <div class="form-actions"><button class="btn primary" id="saveTargetsBtn">Salvar metas</button></div>
+  </div>
+ </section>
+
+ <section id="view-settings" class="hidden">
+  <div class="card">
+   <h2>Importar e exportar</h2>
+   <p class="muted small">O JSON inclui metas, refeições, horários, dias da semana e estado de conclusão. Guarde uma cópia fora do celular.</p>
+   <div class="setting-row"><div><strong>Exportar backup JSON</strong><p>Baixa um arquivo com todos os dados atuais.</p></div><button class="btn primary" id="exportBtn">Exportar</button></div>
+   <div class="setting-row"><div><strong>Importar backup JSON</strong><p>Restaura um arquivo previamente exportado.</p></div><button class="btn" id="importBtn">Importar</button><input type="file" id="importFile" accept=".json,application/json" hidden></div>
+   <div class="setting-row"><div><strong>Baixar/compartilhar arquivo JSON</strong><p>Em alguns celulares, o navegador permite salvar em Arquivos ou compartilhar.</p></div><button class="btn" id="copyJsonBtn">Ver JSON</button></div>
+  </div>
+  <div class="card">
+   <h2>Aplicativo e armazenamento</h2>
+   <div class="setting-row"><div><strong>Instalar no celular</strong><p>Use “Adicionar à Tela de Início” no menu de compartilhamento do Safari ou a opção de instalação do navegador.</p></div><button class="btn" id="installHelpBtn">Como fazer</button></div>
+   <div class="setting-row"><div><strong>Dados neste aparelho</strong><p id="storageStatus">Salvo localmente no navegador.</p></div><span>🔒</span></div>
+   <div class="setting-row"><div><strong>Restaurar dieta de exemplo</strong><p>Recarrega o cardápio inicial, substituindo os dados atuais.</p></div><button class="btn" id="resetBtn">Restaurar</button></div>
+   <div class="setting-row"><div><strong>Apagar todos os dados</strong><p>Remove as refeições e metas salvas neste aparelho.</p></div><button class="btn danger" id="clearBtn">Apagar</button></div>
+  </div>
+  <div class="card">
+   <h2>Sobre o armazenamento</h2>
+   <p class="muted small">Esta versão não usa servidor nem conta: os dados ficam no armazenamento local do navegador. O backup JSON é a forma de levar a dieta para outro aparelho. Para instalação e funcionamento offline, publique os arquivos por HTTPS no GitHub Pages.</p>
+  </div>
+ </section>
+</main>
+
+<nav class="bottomnav"><div class="bottomnav-inner">
+ <button class="active" data-view="today"><b>☷</b>Semana</button>
+ <button data-view="plan"><b>✎</b>Plano</button>
+ <button data-view="settings"><b>⇧</b>Backup</button>
+ <button id="bottomAdd"><b>＋</b>Refeição</button>
+</div></nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<dialog id="mealDialog">
+ <div class="modal-head"><h2 id="mealDialogTitle">Nova refeição</h2><button class="btn icon" id="closeMealDialog" aria-label="Fechar">✕</button></div>
+ <div class="modal-body">
+  <form id="mealForm">
+   <input type="hidden" id="mealId">
+   <div class="form-grid">
+    <div class="field"><label for="mealTime">Horário</label><input id="mealTime" type="time" value="08:00" required></div>
+    <div class="field"><label for="mealName">Nome da refeição</label><input id="mealName" type="text" placeholder="Ex.: Café da manhã" required maxlength="80"></div>
+    <div class="field full"><label for="mealFoods">Alimentos e quantidades</label><textarea id="mealFoods" placeholder="Ex.: 2 ovos; 100 g de pão; 250 ml de leite" required></textarea></div>
+    <div class="field full"><label>Dias da semana</label><div class="days-checks" id="mealDays"></div></div>
+    <div class="field"><label for="mealCalories">Calorias (kcal)</label><input id="mealCalories" type="number" min="0" step="1" placeholder="Ex.: 600"></div>
+    <div class="field"><label for="mealProtein">Proteína (g)</label><input id="mealProtein" type="number" min="0" step="0.1" placeholder="Ex.: 35"></div>
+    <div class="field"><label for="mealCarbs">Carboidratos (g)</label><input id="mealCarbs" type="number" min="0" step="0.1" placeholder="Ex.: 70"></div>
+    <div class="field"><label for="mealFat">Gorduras (g)</label><input id="mealFat" type="number" min="0" step="0.1" placeholder="Ex.: 18"></div>
+    <div class="field full"><label for="mealNotes">Observações (opcional)</label><input id="mealNotes" type="text" placeholder="Ex.: comer 60–90 min antes do treino"></div>
+   </div>
+   <div class="form-actions"><button type="button" class="btn" id="cancelMeal">Cancelar</button><button type="submit" class="btn primary">Salvar refeição</button></div>
+  </form>
+ </div>
+</dialog>
+
+<dialog id="targetsDialog">
+ <div class="modal-head"><h2>Metas diárias</h2><button class="btn icon" id="closeTargetsDialog">✕</button></div>
+ <div class="modal-body">
+  <p class="muted small">Defina seus objetivos diários de energia e macronutrientes.</p>
+  <div class="form-grid">
+   <div><label for="tCalories">Calorias (kcal)</label><input id="tCalories" type="number" min="0"></div>
+   <div><label for="tProtein">Proteína (g)</label><input id="tProtein" type="number" min="0"></div>
+   <div><label for="tCarbs">Carboidratos (g)</label><input id="tCarbs" type="number" min="0"></div>
+   <div><label for="tFat">Gorduras (g)</label><input id="tFat" type="number" min="0"></div>
+  </div>
+  <div class="form-actions"><button class="btn" id="cancelTargets">Cancelar</button><button class="btn primary" id="modalSaveTargets">Salvar metas</button></div>
+ </div>
+</dialog>
+
+<dialog id="jsonDialog">
+ <div class="modal-head"><h2>Dados em JSON</h2><button class="btn icon" id="closeJsonDialog">✕</button></div>
+ <div class="modal-body"><p class="muted small">Você pode copiar este conteúdo e guardá-lo como arquivo .json.</p><textarea id="jsonText" style="min-height:260px;font-family:ui-monospace,monospace;font-size:12px"></textarea><div class="form-actions"><button class="btn" id="closeJson2">Fechar</button><button class="btn primary" id="copyJson">Copiar JSON</button></div></div>
+</dialog>
+
+<script>
+(() => {
+'use strict';
+const STORAGE_KEY = 'minha_dieta_pwa_v1';
+const DAYS = [
+ {id:0,short:'Dom',name:'Domingo'}, {id:1,short:'Seg',name:'Segunda-feira'},
+ {id:2,short:'Ter',name:'Terça-feira'}, {id:3,short:'Qua',name:'Quarta-feira'},
+ {id:4,short:'Qui',name:'Quinta-feira'}, {id:5,short:'Sex',name:'Sexta-feira'},
+ {id:6,short:'Sáb',name:'Sábado'}
+];
+const DEFAULT_DATA = {
+ version:1,
+ targets:{calories:2600,protein:140,carbs:350,fat:70},
+ meals:[
+  {id:'m1',time:'07:30',name:'Café da manhã',foods:'2 ovos inteiros\\n2 pães franceses pequenos (100 g no total)\\n250 ml de leite integral\\n30 g de aveia\\n1 banana média',days:[0,1,2,3,4,5,6],calories:780,protein:30,carbs:110,fat:23,notes:'',doneDays:[]},
+  {id:'m2',time:'12:00',name:'Almoço',foods:'220 g de arroz branco cozido\\n150 g de feijão cozido\\n140 g de peito de frango grelhado\\nSalada de repolho, cenoura ou tomate\\n5 g de óleo no preparo',days:[0,1,2,3,4,5,6],calories:680,protein:48,carbs:80,fat:15,notes:'Pesos do arroz, feijão e frango já cozidos.',doneDays:[]},
+  {id:'m3',time:'16:00',name:'Lanche',foods:'250 ml de leite integral\\n50 g de aveia\\n1 banana média\\n10 g de amendoim torrado',days:[0,1,2,3,4,5,6],calories:500,protein:19,carbs:75,fat:17,notes:'Pode preparar como vitamina ou consumir separadamente.',doneDays:[]},
+  {id:'m4',time:'19:30',name:'Jantar',foods:'200 g de arroz branco cozido\\n100 g de feijão cozido\\n80 g de peito de frango grelhado\\n1 ovo inteiro\\nLegumes ou verduras\\n5 g de óleo no preparo',days:[0,1,2,3,4,5,6],calories:620,protein:38,carbs:72,fat:17,notes:'',doneDays:[]},
+  {id:'m5',time:'Pré/pós-treino',name:'Banana extra (opcional)',foods:'1 banana média',days:[1,2,4,5],calories:100,protein:1,carbs:25,fat:0,notes:'Use nos dias de treino, antes ou depois da sessão. Os totais reais variam conforme o tamanho.',doneDays:[]}
+ ]
+};
+let data = loadData();
+let selectedDay = new Date().getDay();
+let activeView = 'today';
+let deferredInstallPrompt = null;
+const $ = id => document.getElementById(id);
+const safeNum = v => Math.max(0, Number(v) || 0);
+const fmt = (n, digits=0) => Number(n || 0).toLocaleString('pt-BR',{maximumFractionDigits:digits,minimumFractionDigits:0});
+const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function clone(obj){return JSON.parse(JSON.stringify(obj))}
+function loadData(){
+ try{
+  const raw=localStorage.getItem(STORAGE_KEY);
+  if(!raw) return clone(DEFAULT_DATA);
+  const parsed=JSON.parse(raw);
+  if(!parsed || !Array.isArray(parsed.meals) || !parsed.targets) return clone(DEFAULT_DATA);
+  parsed.version=1;
+  parsed.meals=parsed.meals.map(m=>({...m,days:Array.isArray(m.days)?m.days:[0,1,2,3,4,5,6],doneDays:Array.isArray(m.doneDays)?m.doneDays:[]}));
+  return parsed;
+ }catch(e){return clone(DEFAULT_DATA)}
+}
+function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); updateStorageStatus()}
+function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),2600)}
+function dayMeals(day=selectedDay){return data.meals.filter(m=>m.days.includes(day)).sort((a,b)=>String(a.time).localeCompare(String(b.time)))}
+function totals(meals){return meals.reduce((a,m)=>({calories:a.calories+safeNum(m.calories),protein:a.protein+safeNum(m.protein),carbs:a.carbs+safeNum(m.carbs),fat:a.fat+safeNum(m.fat)}),{calories:0,protein:0,carbs:0,fat:0})}
+function activeDateLabel(day){const now=new Date();const d=new Date(now);d.setDate(now.getDate()+((day-now.getDay()+7)%7));return d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})}
+function renderDays(){
+ $('dayStrip').innerHTML=DAYS.map(d=>`<button class="day ${selectedDay===d.id?'active':''} ${dayMeals(d.id).length?'has-items':''}" data-day="${d.id}">${d.short}<span>${dayMeals(d.id).length} refei.</span></button>`).join('');
+ $('dayStrip').querySelectorAll('[data-day]').forEach(b=>b.addEventListener('click',()=>{selectedDay=Number(b.dataset.day);renderAll()}));
+ $('dateLabel').textContent=selectedDay===new Date().getDay()?'Hoje · '+activeDateLabel(selectedDay):DAYS[selectedDay].name+' · '+activeDateLabel(selectedDay);
+ $('mealsTitle').textContent='Refeições de '+DAYS[selectedDay].name;
+}
+function renderSummary(){
+ const t=totals(dayMeals());
+ const metas=data.targets;
+ const cards=[
+  ['cal','🔥',t.calories,'kcal',metas.calories],
+  ['prot','💪',t.protein,'g proteína',metas.protein],
+  ['carb','🌾',t.carbs,'g carboidratos',metas.carbs],
+  ['fat','🥑',t.fat,'g gorduras',metas.fat]
+ ];
+ $('summaryGrid').innerHTML=cards.map(([cls,ico,val,unit,target])=>`<div class="metric ${cls}"><div class="n">${fmt(val,1)}</div><div class="l">${ico} ${unit}</div><div class="progress"><i style="width:${target?Math.min(100,val/target*100):0}%"></i></div><div class="l">${target?fmt(val/target*100):0}% da meta (${fmt(target)})</div></div>`).join('');
+ const done=dayMeals().filter(m=>(m.doneDays||[]).includes(selectedDay)).length;
+ $('daySummaryText').textContent=`${done} de ${dayMeals().length} refeições marcadas como concluídas`;
+}
+function renderMealCard(m,withDay=false){
+ const done=(m.doneDays||[]).includes(selectedDay);
+ return `<article class="meal"><div class="meal-top"><div class="time">${escapeHtml(m.time)}</div><div class="meal-main"><div class="meal-name">${escapeHtml(m.name)}</div><div class="meal-desc">${escapeHtml(m.foods)}</div>${m.notes?`<div class="meal-desc">💡 ${escapeHtml(m.notes)}</div>`:''}<div class="meal-meta"><span class="pill">${fmt(m.calories)} kcal</span><span class="pill">P ${fmt(m.protein,1)} g</span><span class="pill">C ${fmt(m.carbs,1)} g</span><span class="pill">G ${fmt(m.fat,1)} g</span>${withDay?`<span class="pill">${(m.days||[]).map(d=>DAYS[d].short).join(', ')}</span>`:''}</div></div><div class="meal-actions"><button class="btn icon" data-edit="${escapeHtml(m.id)}" title="Editar">✎</button><button class="btn icon" data-delete="${escapeHtml(m.id)}" title="Excluir">×</button></div></div><div class="meal-foot"><label class="check"><input type="checkbox" data-done="${escapeHtml(m.id)}" ${done?'checked':''}> Marcar como consumida</label><span class="small muted">${done?'Concluída':'Planejada'}</span></div></article>`;
+}
+function bindMealActions(root){
+ root.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>openMealDialog(b.dataset.edit)));
+ root.querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',()=>deleteMeal(b.dataset.delete)));
+ root.querySelectorAll('[data-done]').forEach(b=>b.addEventListener('change',()=>{
+  const m=data.meals.find(x=>x.id===b.dataset.done);if(!m)return;
+  m.doneDays=m.doneDays||[];
+  if(b.checked&&!m.doneDays.includes(selectedDay))m.doneDays.push(selectedDay);
+  if(!b.checked)m.doneDays=m.doneDays.filter(d=>d!==selectedDay);
+  saveData();renderAll();
+ }));
+}
+function renderMeals(){
+ const meals=dayMeals();
+ $('mealList').innerHTML=meals.length?meals.map(m=>renderMealCard(m)).join(''):`<div class="empty"><div class="emoji">🍽️</div><strong>Nenhuma refeição neste dia</strong><p>Cadastre uma refeição ou adicione um plano para este dia.</p><button class="btn primary" id="emptyAdd">＋ Adicionar refeição</button></div>`;
+ bindMealActions($('mealList'));
+ const emptyAdd=$('emptyAdd');if(emptyAdd)emptyAdd.addEventListener('click',()=>openMealDialog(null,selectedDay));
+}
+function renderPlan(){
+ const sorted=[...data.meals].sort((a,b)=>String(a.time).localeCompare(String(b.time)));
+ $('planList').innerHTML=sorted.length?sorted.map(m=>renderMealCard(m,true)).join(''):`<div class="empty"><div class="emoji">🗓️</div><strong>Seu plano está vazio</strong><p>Cadastre sua primeira refeição.</p></div>`;
+ bindMealActions($('planList'));
+ $('targetCalories').value=data.targets.calories;
+ $('targetProtein').value=data.targets.protein;
+ $('targetCarbs').value=data.targets.carbs;
+ $('targetFat').value=data.targets.fat;
+}
+function renderAll(){renderDays();renderSummary();renderMeals();renderPlan();updateStorageStatus()}
+function switchView(view){
+ activeView=view;
+ document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+ ['today','plan','settings'].forEach(v=>$('view-'+v).classList.toggle('hidden',v!==view));
+ if(view==='plan')renderPlan();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function openMealDialog(id=null,defaultDay=selectedDay){
+ const m=id?data.meals.find(x=>x.id===id):null;
+ $('mealDialogTitle').textContent=m?'Editar refeição':'Nova refeição';
+ $('mealId').value=m?.id||'';
+ $('mealTime').value=m?.time&&/^\d\d:\d\d$/.test(m.time)?m.time:'08:00';
+ $('mealName').value=m?.name||'';
+ $('mealFoods').value=m?.foods||'';
+ $('mealCalories').value=m?.calories??'';
+ $('mealProtein').value=m?.protein??'';
+ $('mealCarbs').value=m?.carbs??'';
+ $('mealFat').value=m?.fat??'';
+ $('mealNotes').value=m?.notes||'';
+ const days=m?.days||[defaultDay];
+ $('mealDays').innerHTML=DAYS.map(d=>`<label><input type="checkbox" name="mealDay" value="${d.id}" ${days.includes(d.id)?'checked':''}><span>${d.short}</span></label>`).join('');
+ $('mealDialog').showModal();
+}
+function closeMealDialog(){$('mealDialog').close()}
+function submitMeal(e){
+ e.preventDefault();
+ const id=$('mealId').value||('m'+Date.now().toString(36)+Math.random().toString(36).slice(2,6));
+ const days=[...document.querySelectorAll('input[name="mealDay"]:checked')].map(x=>Number(x.value));
+ if(!days.length){toast('Selecione pelo menos um dia da semana.');return}
+ const old=data.meals.find(m=>m.id===id);
+ const meal={id,time:$('mealTime').value||'08:00',name:$('mealName').value.trim(),foods:$('mealFoods').value.trim(),days,
+ calories:safeNum($('mealCalories').value),protein:safeNum($('mealProtein').value),carbs:safeNum($('mealCarbs').value),fat:safeNum($('mealFat').value),notes:$('mealNotes').value.trim(),doneDays:old?.doneDays||[]};
+ if(old)data.meals=data.meals.map(m=>m.id===id?meal:m);else data.meals.push(meal);
+ saveData();closeMealDialog();renderAll();toast(old?'Refeição atualizada.':'Refeição cadastrada.');
+}
+function deleteMeal(id){
+ const m=data.meals.find(x=>x.id===id);if(!m)return;
+ if(!confirm(`Excluir "${m.name}"? Esta ação não pode ser desfeita.`))return;
+ data.meals=data.meals.filter(x=>x.id!==id);saveData();renderAll();toast('Refeição excluída.');
+}
+function saveTargetsFrom(prefix){
+ const next={calories:safeNum($(prefix+'Calories').value),protein:safeNum($(prefix+'Protein').value),carbs:safeNum($(prefix+'Carbs').value),fat:safeNum($(prefix+'Fat').value)};
+ if(!next.calories&&!next.protein&&!next.carbs&&!next.fat){toast('Informe pelo menos uma meta.');return}
+ data.targets=next;saveData();renderAll();toast('Metas salvas.');
+}
+function exportJSON(){
+ const payload={...clone(data),exportedAt:new Date().toISOString(),app:'Minha Dieta PWA'};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob);const a=document.createElement('a');
+ a.href=url;a.download=`minha-dieta-${new Date().toISOString().slice(0,10)}.json`;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+ toast('Backup JSON exportado.');
+}
+function importJSONFile(file){
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const parsed=JSON.parse(reader.result);
+   if(!parsed||!Array.isArray(parsed.meals)||!parsed.targets)throw new Error('Estrutura inválida');
+   const targets={calories:safeNum(parsed.targets.calories),protein:safeNum(parsed.targets.protein),carbs:safeNum(parsed.targets.carbs),fat:safeNum(parsed.targets.fat)};
+   const meals=parsed.meals.map((m,i)=>{
+    if(!m||typeof m!=='object'||!m.name)throw new Error('Há uma refeição inválida no arquivo.');
+    return {id:String(m.id||('import'+i+Date.now())),time:String(m.time||'08:00'),name:String(m.name),foods:String(m.foods||''),days:Array.isArray(m.days)?m.days.filter(d=>Number.isInteger(d)&&d>=0&&d<=6):[0,1,2,3,4,5,6],calories:safeNum(m.calories),protein:safeNum(m.protein),carbs:safeNum(m.carbs),fat:safeNum(m.fat),notes:String(m.notes||''),doneDays:Array.isArray(m.doneDays)?m.doneDays.filter(d=>Number.isInteger(d)&&d>=0&&d<=6):[]};
+   });
+   if(!confirm(`O arquivo contém ${meals.length} refeições. Substituir todos os dados atuais?`))return;
+   data={version:1,targets,meals};saveData();renderAll();switchView('today');toast('Backup importado com sucesso.');
+  }catch(e){alert('Não foi possível importar o JSON. Verifique se é um backup válido da Minha Dieta.\\n'+e.message)}
+ };
+ reader.readAsText(file);
+}
+function updateStorageStatus(){
+ const el=$('storageStatus');if(el)el.textContent=`Armazenamento local ativo · ${data.meals.length} refeições cadastradas`;
+}
+function resetExample(){
+ if(!confirm('Restaurar a dieta de exemplo? Isso substituirá as alterações atuais. Exporte um backup antes, se necessário.'))return;
+ data=clone(DEFAULT_DATA);saveData();renderAll();switchView('today');toast('Dieta de exemplo restaurada.');
+}
+function clearAll(){
+ if(!confirm('Apagar todas as refeições e metas deste aparelho? Exporte um backup antes, se quiser guardar os dados.'))return;
+ data={version:1,targets:{calories:2600,protein:140,carbs:350,fat:70},meals:[]};saveData();renderAll();toast('Dados apagados.');
+}
+function openTargetsDialog(){
+ $('tCalories').value=data.targets.calories;$('tProtein').value=data.targets.protein;$('tCarbs').value=data.targets.carbs;$('tFat').value=data.targets.fat;
+ $('targetsDialog').showModal();
+}
+function showJSON(){
+ $('jsonText').value=JSON.stringify({...clone(data),exportedAt:new Date().toISOString(),app:'Minha Dieta PWA'},null,2);
+ $('jsonDialog').showModal();
+}
+async function copyJSON(){
+ try{await navigator.clipboard.writeText($('jsonText').value);toast('JSON copiado.')}catch(e){$('jsonText').select();document.execCommand('copy');toast('Tente copiar o texto selecionado.')}
+}
+function installHelp(){
+ alert('Para instalar no iPhone: abra o site publicado no Safari, toque em Compartilhar e escolha “Adicionar à Tela de Início”.\\n\\nNo Android: abra no Chrome e use o menu ⋮ > Instalar app ou Adicionar à tela inicial.\\n\\nPublique os arquivos via GitHub Pages (HTTPS) para habilitar a instalação e o modo offline.');
+}
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
+$('todayBtn').addEventListener('click',()=>{selectedDay=new Date().getDay();renderAll()});
+$('quickAddBtn').addEventListener('click',()=>openMealDialog(null,selectedDay));
+$('addMealBtn').addEventListener('click',()=>openMealDialog(null,selectedDay));
+$('newMealBtn').addEventListener('click',()=>openMealDialog(null,selectedDay));
+$('bottomAdd').addEventListener('click',()=>openMealDialog(null,selectedDay));
+$('mealForm').addEventListener('submit',submitMeal);
+$('closeMealDialog').addEventListener('click',closeMealDialog);
+$('cancelMeal').addEventListener('click',closeMealDialog);
+$('editTargetsBtn').addEventListener('click',openTargetsDialog);
+$('closeTargetsDialog').addEventListener('click',()=>$('targetsDialog').close());
+$('cancelTargets').addEventListener('click',()=>$('targetsDialog').close());
+$('modalSaveTargets').addEventListener('click',()=>{saveTargetsFrom('t');$('targetsDialog').close()});
+$('saveTargetsBtn').addEventListener('click',()=>saveTargetsFrom('target'));
+$('exportBtn').addEventListener('click',exportJSON);
+$('importBtn').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',e=>{importJSONFile(e.target.files[0]);e.target.value=''});
+$('copyJsonBtn').addEventListener('click',showJSON);
+$('copyJson').addEventListener('click',copyJSON);
+$('closeJsonDialog').addEventListener('click',()=>$('jsonDialog').close());
+$('closeJson2').addEventListener('click',()=>$('jsonDialog').close());
+$('resetBtn').addEventListener('click',resetExample);
+$('clearBtn').addEventListener('click',clearAll);
+$('installHelpBtn').addEventListener('click',installHelp);
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;$('installBtn').hidden=false});
+$('installBtn').addEventListener('click',async()=>{if(!deferredInstallPrompt){installHelp();return}deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$('installBtn').hidden=true});
+window.addEventListener('appinstalled',()=>toast('Aplicativo instalado.'));
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+renderAll();
+})();
+</script>
+</body>
+</html>
