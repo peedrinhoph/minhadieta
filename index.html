@@ -966,10 +966,10 @@
                 version: 1,
                 targets: {calories: 2600, protein: 140, carbs: 350, fat: 70},
                 meals: [
-                    {id: 'm1', time: '07:30', name: 'Café da manhã', foods: '2 ovos inteiros\n2 pães franceses pequenos (100 g no total)\n250 ml de leite integral\n30 g de aveia\n1 banana média', days: [0, 1, 2, 3, 4, 5, 6], calories: 780, protein: 30, carbs: 110, fat: 23, notes: '', doneDays: []},
-                    {id: 'm2', time: '12:00', name: 'Almoço', foods: '220 g de arroz branco cozido\n150 g de feijão cozido\n140 g de peito de frango grelhado\nSalada de repolho, cenoura ou tomate\n5 g de óleo no preparo', days: [0, 1, 2, 3, 4, 5, 6], calories: 680, protein: 48, carbs: 80, fat: 15, notes: 'Pesos do arroz, feijão e frango já cozidos.', doneDays: []},
-                    {id: 'm3', time: '16:00', name: 'Lanche', foods: '250 ml de leite integral\n50 g de aveia\n1 banana média\n10 g de amendoim torrado', days: [0, 1, 2, 3, 4, 5, 6], calories: 500, protein: 19, carbs: 75, fat: 17, notes: 'Pode preparar como vitamina ou consumir separadamente.', doneDays: []},
-                    {id: 'm4', time: '19:30', name: 'Jantar', foods: '200 g de arroz branco cozido\n100 g de feijão cozido\n80 g de peito de frango grelhado\n1 ovo inteiro\nLegumes ou verduras\n5 g de óleo no preparo', days: [0, 1, 2, 3, 4, 5, 6], calories: 620, protein: 38, carbs: 72, fat: 17, notes: '', doneDays: []},
+                    {id: 'm1', time: '07:30', name: 'Café da manhã', foods: '2 ovos inteiros \n 2 pães franceses pequenos (100 g no total) \n 250 ml de leite integral \n 30 g de aveia \n 1 banana média', days: [0, 1, 2, 3, 4, 5, 6], calories: 780, protein: 30, carbs: 110, fat: 23, notes: '', doneDays: []},
+                    {id: 'm2', time: '12:00', name: 'Almoço', foods: '220 g de arroz branco cozido \n 150 g de feijão cozido \n 140 g de peito de frango grelhado \n Salada de repolho, cenoura ou tomate \n 5 g de óleo no preparo', days: [0, 1, 2, 3, 4, 5, 6], calories: 680, protein: 48, carbs: 80, fat: 15, notes: 'Pesos do arroz, feijão e frango já cozidos.', doneDays: []},
+                    {id: 'm3', time: '16:00', name: 'Lanche', foods: '250 ml de leite integral \n 50 g de aveia \n 1 banana média \n 10 g de amendoim torrado', days: [0, 1, 2, 3, 4, 5, 6], calories: 500, protein: 19, carbs: 75, fat: 17, notes: 'Pode preparar como vitamina ou consumir separadamente.', doneDays: []},
+                    {id: 'm4', time: '19:30', name: 'Jantar', foods: '200 g de arroz branco cozido \n 100 g de feijão cozido \n 80 g de peito de frango grelhado \n 1 ovo inteiro \n Legumes ou verduras \n 5 g de óleo no preparo', days: [0, 1, 2, 3, 4, 5, 6], calories: 620, protein: 38, carbs: 72, fat: 17, notes: '', doneDays: []},
                     {id: 'm5', time: 'Pré/pós-treino', name: 'Banana extra (opcional)', foods: '1 banana média', days: [1, 2, 4, 5], calories: 100, protein: 1, carbs: 25, fat: 0, notes: 'Use nos dias de treino, antes ou depois da sessão. Os totais reais variam conforme o tamanho.', doneDays: []}
                 ]
             };
@@ -1116,7 +1116,7 @@
                         });
                         if (!confirm(`O arquivo contém ${meals.length} refeições. Substituir todos os dados atuais?`)) return;
                         data = {version: 1, targets, meals}; saveData(); renderAll(); switchView('today'); toast('Backup importado com sucesso.');
-                    } catch (e) {alert('Não foi possível importar o JSON. Verifique se é um backup válido da Minha Dieta.\n' + e.message)}
+                    } catch (e) {alert('Não foi possível importar o JSON. Verifique se é um backup válido da Minha Dieta. \n ' + e.message)}
                 };
                 reader.readAsText(file);
             }
@@ -1143,7 +1143,7 @@
                 try {await navigator.clipboard.writeText($('jsonText').value); toast('JSON copiado.')} catch (e) {$('jsonText').select(); document.execCommand('copy'); toast('Tente copiar o texto selecionado.')}
             }
             function installHelp() {
-                alert('Para instalar no iPhone: abra o site publicado no Safari, toque em Compartilhar e escolha “Adicionar à Tela de Início”.\n\nNo Android: abra no Chrome e use o menu ⋮ > Instalar app ou Adicionar à tela inicial.\n\nPublique os arquivos via GitHub Pages (HTTPS) para habilitar a instalação e o modo offline.');
+                alert('Para instalar no iPhone: abra o site publicado no Safari, toque em Compartilhar e escolha “Adicionar à Tela de Início”. \n  \n No Android: abra no Chrome e use o menu ⋮ > Instalar app ou Adicionar à tela inicial. \n  \n Publique os arquivos via GitHub Pages (HTTPS) para habilitar a instalação e o modo offline.');
             }
             document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => switchView(b.dataset.view)));
             $('todayBtn').addEventListener('click', () => {selectedDay = new Date().getDay(); renderAll()});
