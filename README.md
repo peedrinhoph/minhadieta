@@ -2,13 +2,6 @@
 
 Aplicativo estático para planejar dieta por dia da semana e horário. Não usa backend; os dados ficam no `localStorage` do navegador.
 
-## Publicar no GitHub Pages
-1. Crie um repositório GitHub.
-2. Envie `index.html`, `manifest.webmanifest`, `sw.js` e `icon.svg` para a raiz do repositório.
-3. Vá a **Settings → Pages**.
-4. Em **Build and deployment**, escolha **Deploy from a branch**, selecione a branch principal e a pasta `/ (root)`.
-5. Aguarde a publicação e abra o endereço HTTPS fornecido pelo GitHub Pages.
-
 ## Instalar no celular
 - **iPhone:** abra o site no Safari → Compartilhar → **Adicionar à Tela de Início**.
 - **Android:** abra no Chrome → menu ⋮ → **Instalar app** ou **Adicionar à tela inicial**.
